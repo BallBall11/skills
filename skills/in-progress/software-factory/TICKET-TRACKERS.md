@@ -1,132 +1,85 @@
 # Ticket trackers
 
-Surveyed 2026-10 from vendor docs, changelogs and pricing pages. Agent features move monthly: treat every "preview" or "beta" below as a prompt to re-check the linked page.
+> Surveyed 2026-10, and not guaranteed to be up to date. Use it to get oriented, then research the current options yourself: products, prices, limits and betas change fast.
 
-The ticket tracker is the factory's human interface, so judge each option by six **seams**:
+The ticket tracker is the factory's human interface. Each type below is a starting point: read what it is and when a factory picks it, then check the examples against the questions in [Researching further](#researching-further).
 
-- **Triggers**: which ticket changes emit a webhook or event the orchestrator can turn into a run.
-- **Routing**: labels, statuses or fields a run reads to know its kind (explore, implementer, rework).
-- **Thread**: comments where a human answers an agent, which triggers the next run.
-- **Identity**: an API plus a bot identity, so runs act as themselves and humans can tell agent from colleague.
-- **Native agents**: the tracker's own assign-to-agent feature. Each one is a ready-made run, and it partly fills the orchestrator and runner slots as well.
-- **Outside filing**: how easily customers and ticket sources create tickets; plus whether it self-hosts.
+## The types
 
-## 1. Git-host tracker
+### 1. Git-host tracker
 
-**What**: the tracker built into the git host, so tickets, branches and PRs share one product, one permission model and one identity.
+The tracker built into the git host, so tickets, branches and PRs share one product, one permission model and one identity. A factory picks it when it is small, the team already lives on the git host, or the repo is public. This is the "All on GitHub" design: the git host's CI fills the orchestrator slot with no glue. Labels are the dependable router, because statuses live on a separate board. Outside developers file where the code is; non-developers need an account, so a feedback button files through the API. Self-hosted git hosts carry their tracker with them.
 
-**Picks it when**: the factory is small, the team is on the git host already, or the repo is public. This is the "All on GitHub" design: the git host's CI fills the orchestrator slot with zero glue.
-
-- **Triggers**: rich. GitHub Actions fires on `issues` (opened, labeled, assigned) and `issue_comment`. Gotcha: changes made with the default `GITHUB_TOKEN` start no new workflow runs, so a run that labels a ticket to trigger the next run acts through a GitHub App token.
-- **Routing**: labels, plus issue types and sub-issues on GitHub; scoped labels on GitLab. Statuses live in a separate Projects board, so labels are the dependable router.
-- **Thread**: the issue thread, with PR review one click away.
-- **Identity**: GitHub Apps and GitLab service accounts appear as bots.
-- **Native agents**: GitHub assigns an issue to Copilot, Claude or Codex (third-party agents in public preview, paid Copilot plans); each opens a draft PR. Copilot reads the issue at assignment only, so later context goes on the PR. GitLab Duo flows start on mention, assign, assign-reviewer, and since 2026-07 on "work item created".
-- **Outside filing**: the best of any type for developers: anyone with an account files on a public repo, and issue forms shape the report. Non-developers need an account, so a feedback button files through the API.
-- **Hosting**: GitHub Enterprise Server, GitLab self-managed, Forgejo and Gitea all self-host.
-
-Examples:
-- [GitHub Issues](https://docs.github.com/en/copilot/concepts/agents/about-third-party-agents): the default; assign-to-agent for Copilot, Claude, Codex.
+- [GitHub Issues](https://docs.github.com/en/copilot/concepts/agents/about-third-party-agents): the default; assign-to-agent for Copilot, Claude and Codex.
 - [GitLab Issues](https://about.gitlab.com/blog/how-to-use-a-work-item-created-trigger/): Duo Agent Platform flows triggered from work items.
-- [Forgejo](https://forgejo.org/2026-10-release-v17-0/): self-hosted, Actions-compatible; v17.0 (2026-10) added workflow and job webhooks.
+- [Forgejo](https://forgejo.org/2026-10-release-v17-0/): self-hosted, Actions-compatible.
 
-## 2. Agent-native dev tracker
+To verify: which assign-to-agent features are still in preview and which plans include them; whether a native agent reads later comments or only the ticket at assignment (as of 2026-10, Copilot reads it at assignment only).
 
-**What**: a standalone SaaS tracker for software teams that now treats agents as first-class assignees, with an agent API and a native coding agent.
+### 2. Agent-native dev tracker
 
-**Picks it when**: humans outside engineering (product, support, design) schedule work, the team already lives there, or the factory wants polished triage and planning views. The "Linear tickets" design.
+A standalone SaaS tracker for software teams that treats agents as first-class assignees, with an agent API and its own coding agent. A factory picks it when product, support or design staff schedule work, the team already lives there, or it wants polished triage and planning views. The "Linear tickets" design. Statuses and workflows are first-class, so "moved to Ready" is a clean trigger. Agents appear as app users a human delegates to, and runs can stream progress into the ticket. Native agents here are the deepest of any type, so one can partly fill the orchestrator and runner slots too.
 
-- **Triggers**: webhooks on every ticket change, plus a dedicated agent event. Linear sends an AgentSession webhook when a human delegates or mentions the agent, and expects an acknowledgement within 10 seconds. Jira fires an agent on a workflow transition into a chosen status.
-- **Routing**: statuses and workflows are first-class, so "moved to Ready" is a clean trigger; labels and custom fields add the rest.
-- **Thread**: comments, plus agent activity streams (Linear's thoughts and actions) that show a run's progress inline.
-- **Identity**: app users. Linear and Shortcut agents are OAuth apps a human delegates to while staying assignee; Linear agents are free seats.
-- **Native agents**: deepest of any type. Linear Agent runs coding sessions with Claude Code or Codex since 2026-06 (AI credits, $0.25 per 20-minute sandbox block). Jira assigns to Claude, Cursor, Codex, Copilot or its own Jira Coding Agent, metered in Rovo credits from 2026-12-03. Shortcut takes Claude Code, Cursor and Devin.
-- **Outside filing**: Linear Asks files from Slack (shared channels admit customers) and email; web forms are Enterprise-only. Jira pairs with Jira Service Management portals for customers.
-- **Hosting**: SaaS. Jira Data Center reaches end of life on 2029-03-28; YouTrack still self-hosts.
-
-Examples:
-- [Linear](https://linear.app/developers/agents): Agent API in developer preview; the most agent-shaped tracker.
-- [Jira](https://support.atlassian.com/jira-software-cloud/docs/collaborate-on-work-items-with-ai-agents/): status-triggered Rovo and third-party agents; heavy enterprise workflows.
+- [Linear](https://linear.app/developers/agents): the most agent-shaped tracker.
+- [Jira](https://support.atlassian.com/jira-software-cloud/docs/collaborate-on-work-items-with-ai-agents/): status-triggered agents; fits an org already on Atlassian.
 - [Shortcut](https://www.shortcut.com/help/integrations/using-ai-agents): assign a story or mention an agent in a comment.
-- [YouTrack](https://www.jetbrains.com/youtrack/): JetBrains tracker with workflows-as-code; agent assignment still community-built.
+- [YouTrack](https://www.jetbrains.com/youtrack/): workflows-as-code; self-hosts.
 
-## 3. Open-source dev tracker
+To verify: agent API status (Linear's was a developer preview as of 2026-10); how native agent runs are metered and priced; agent seat cost; acknowledgement deadlines on agent webhooks; which plan unlocks customer-facing forms; self-hosted edition end-of-life dates.
 
-**What**: a Linear-style tracker you can run on your own infrastructure, with a cloud edition beside it.
+### 3. Open-source dev tracker
 
-**Picks it when**: data must stay in-house (air-gapped, regulated) or the user wants to read and patch the tracker's source, while still buying the service rather than building it.
+A Linear-style tracker you can run on your own infrastructure, with a cloud edition beside it. A factory picks it when data stays in-house (air-gapped, regulated) or the user wants to read and patch the tracker's source while still buying it. Routing by states, labels and custom properties works much as in type 2; native agents are younger.
 
-- **Triggers**: REST webhooks on work-item events. Plane creates an Agent Run when a human mentions an agent bot, and re-fires on each reply.
-- **Routing**: states, labels and custom properties, close to Linear.
-- **Thread**: comments; Plane's agents reply as comments or ask a question back (an "elicitation").
-- **Identity**: Plane installs each OAuth app as a bot user, free of seat billing.
-- **Native agents**: younger. Plane Agents are in beta; Huly and OpenProject lean on integrations.
-- **Outside filing**: guest roles and intake forms vary by product and edition; check the edition's feature table.
-- **Hosting**: self-hosts by design (Plane is AGPL-3.0, Huly EPL-2.0, OpenProject GPL-3.0). Huly's stack (CockroachDB, Elasticsearch, Redpanda) is heavy to operate.
+- [Plane](https://developers.plane.so/dev-tools/agents/overview): Linear-like; bot users per app; agents reply in comments.
+- [Huly](https://github.com/hcengineering/huly-selfhost): all-in-one workspace with two-way GitHub sync; a heavy stack to operate.
+- [OpenProject](https://www.openproject.org/): mature, classic project management.
 
-Examples:
-- [Plane](https://developers.plane.so/dev-tools/agents/overview): Linear-like, agents in beta, cloud or self-hosted.
-- [Huly](https://github.com/hcengineering/huly-selfhost): all-in-one workspace with two-way GitHub sync.
-- [OpenProject](https://www.openproject.org/): mature, classic project management, GitHub and GitLab integrations.
+To verify: agent feature status (Plane's was beta as of 2026-10); which edition carries guest roles and intake forms; licence; the self-hosted stack's operating cost.
 
-## 4. General work tool
+### 4. General work tool
 
-**What**: a work-management or docs tool whose database or task list doubles as the tracker.
+A work-management or docs tool whose database or task list doubles as the tracker. A factory picks it when it serves a non-engineering team already living there, or tickets are mostly content, ops or research rather than code. Forms are the strength: anyone with a link files a ticket. Routing is flexible database properties, so every factory invents its own schema. Developer context (diffs, PRs) sits a click away on the git host. SaaS only.
 
-**Picks it when**: the factory serves a non-engineering team that already lives there, or tickets are mostly content, ops or research work rather than code.
-
-- **Triggers**: webhooks exist but are coarse. Notion batches `page.content_updated`, so events arrive a minute or two late; Asana, Trello and ClickUp send per-task events.
-- **Routing**: database properties, sections or lists; flexible, and every factory invents its own schema.
-- **Thread**: comments, though developer context (diffs, PR links) sits a click away on the git host.
-- **Identity**: integrations act through API tokens; bot presence varies.
-- **Native agents**: workspace agents aimed at office work. Notion Custom Agents fire on database changes (Business and Enterprise); Asana AI Teammates take assigned tasks; ClickUp Cloud Agents turn a task into a PR.
-- **Outside filing**: forms are a strength: Notion, Asana and ClickUp forms file tickets from anyone with a link.
-- **Hosting**: SaaS only.
-
-Examples:
-- [Notion](https://www.notion.com/help/custom-agents): database-as-tracker; Custom Agents with database triggers.
-- [Asana](https://asana.com/product/ai/ai-teammates): AI Teammates you assign tasks to.
+- [Notion](https://www.notion.com/help/custom-agents): database-as-tracker; agents fire on database changes.
+- [Asana](https://asana.com/product/ai/ai-teammates): AI Teammates take assigned tasks.
 - [ClickUp](https://clickup.com/brain/cloud-agents): Cloud Agents return a PR in the task thread.
 - [Trello](https://developer.atlassian.com/cloud/trello/guides/rest-api/webhooks/): boards and lists; webhooks plus Butler automation.
 
-## 5. Repo-native tracker
+To verify: webhook latency and granularity (as of 2026-10, Notion batched content updates, arriving a minute or two late); which plan includes agents.
 
-**What**: tickets stored as files in the repo (JSONL, Markdown), edited by agents through a CLI or MCP server, versioned and merged like code.
+### 5. Repo-native tracker
 
-**Picks it when**: one developer drives agents locally and wants their plan in git, or as a run's working memory beside a real tracker.
+Tickets stored as files in the repo (JSONL, Markdown), edited by agents through a CLI or MCP server and merged like code. A factory picks it when one developer drives agents locally and wants the plan in git, or as a run's working memory beside a real tracker. A push to the git host is the only trigger, so the orchestrator diffs files to find what changed. Identity is the git host's. Outside filing is a commit or PR, the weakest of any type, so a factory graduates to a git-host tracker once others file tickets.
 
-- **Triggers**: a push to the git host is the only event; the orchestrator diffs the files to find what changed.
-- **Routing**: fields in each file; Beads tracks dependencies, so a run picks the next unblocked ticket.
-- **Thread**: commits and PR reviews; a human talks to agents by editing files.
-- **Identity**: the git host's identity.
-- **Native agents**: the agent is the primary user by design.
-- **Outside filing**: weakest of any type: filing means a commit or PR.
-- **Hosting**: lives wherever the repo lives.
+- [Beads](https://github.com/steveyegge/beads): JSONL with dependency tracking, so a run picks the next unblocked ticket.
+- [Backlog.md](https://github.com/MrLesk/Backlog.md): Markdown tasks with a Kanban view and MCP server.
 
-Examples:
-- [Beads](https://github.com/steveyegge/beads): `bd` CLI, JSONL in `.beads/`, hash IDs to keep branches from colliding.
-- [Backlog.md](https://github.com/MrLesk/Backlog.md): Markdown tasks with a terminal and web Kanban, MCP server.
+### 6. Build-your-own
 
-## 6. Build-your-own
+The factory's own app holds tickets in its own database, usually beside the orchestrator. The "Own tracker" design. A factory picks it when the tracker *is* the product (an internal platform, a customer-facing support factory) or no off-the-shelf model fits. Triggers become function calls; every trait in the questions below becomes code to write and maintain, which is why the skill favours buying. An [Airtable](https://airtable.com/developers/web/api/webhooks-overview) base with webhooks is a half-built middle.
 
-**What**: the factory's own app holds tickets in its own database, usually beside the orchestrator. The "Own tracker" design.
+## Researching further
 
-**Picks it when**: the tracker *is* the product (an internal platform, a customer-facing support factory) or no off-the-shelf model fits. The skill favours buying: every seam above becomes code to write and maintain.
+Check each candidate against these questions. They decide the slot:
 
-- **Triggers, routing, identity**: exactly what you build; triggers become function calls instead of webhooks.
-- **Thread**: a comment UI you build, or email and Slack replies you parse.
-- **Outside filing**: fully in your hands, from public forms to in-app buttons.
-- **Hosting**: anywhere.
+- **Triggers**: which ticket changes (created, labelled, status moved, assigned, commented, mentioned) emit a webhook or event the orchestrator can turn into a run? How fast and how granular?
+- **Routing**: which labels, statuses or fields can a run read to know its kind (explore, implement, rework)?
+- **Thread**: can a human answer an agent in comments, and does that reply trigger the next run?
+- **Identity**: is there an API plus a bot identity, so runs act as themselves and humans tell agent from colleague? Does the bot cost a seat?
+- **Native agents**: can a ticket be assigned to an agent directly? Which agents, on which plan, metered how? What does it read: the ticket at assignment, or the whole thread?
+- **Outside filing**: how does a ticket source or customer create tickets: forms, email, chat, API? Which plan unlocks it?
+- **Hosting**: SaaS only, or self-hosted, and under which licence?
 
-Examples: a Postgres table plus an admin UI; an [Airtable](https://airtable.com/developers/web/api/webhooks-overview) base with webhooks as a half-built middle.
+Answers live in primary sources: the API and webhook reference (event lists, payloads, delivery and retry rules), the agent or app developer docs, the pricing page and plan comparison table, and the changelog or release notes. Prefer these over blog posts and comparison sites.
 
-## Choosing
+Stalest first: agent features and their preview or beta status, agent metering and credit prices, plan gating of agents and forms, rate limits, and acquisitions, shutdowns and end-of-life dates for self-hosted editions. Webhook event lists and routing models change slowly.
 
-- **Code-only team, one repo, wants fewest products**: git-host tracker; route by label, trigger through a GitHub App.
-- **Public open-source project**: git-host tracker; outside developers file where the code is.
-- **Product, support or design staff schedule work**: agent-native dev tracker; Linear for agent depth, Jira where the org already runs Atlassian.
-- **Customers report bugs directly**: whichever tracker files from forms or email; a feedback button as a ticket source works with all of them.
-- **Data stays on-premises**: open-source dev tracker (Plane), or a self-hosted git host with its tracker.
-- **Factory serves a non-engineering team**: general work tool they already use.
-- **Solo developer, local agents**: repo-native tracker, graduating to a git-host tracker once others file tickets.
-- **The tracker is the product**: build-your-own.
+## Durable gotchas
+
+Verify each still holds before relying on it:
+
+- **GitHub's `GITHUB_TOKEN` trap**: changes made with the default `GITHUB_TOKEN` trigger no new workflow runs. A run that labels or comments on a ticket to trigger the next run acts through a GitHub App token.
+- **Assignment-time context**: some native agents read the ticket only when assigned, so later context goes on the PR.
+- **Agent webhooks expect a fast acknowledgement**: the orchestrator acknowledges at once and starts the run afterwards.
+- **Batched webhooks in general work tools** arrive late; a factory needing prompt runs triggers on property changes or picks another type.

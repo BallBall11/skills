@@ -60,7 +60,7 @@ Each service is a slot. One product can fill several slots, and one server can h
 | Runner                 | Actions runner                  | Actions, E2B, Daytona or a VPS | own app, or sandboxes    |
 | Observability platform | none: Actions run pages suffice | an LLM tracing platform        | own app                  |
 
-When the user is choosing a product for a slot, read that slot's survey of the options, grouped by type:
+When the user is choosing a product for a slot, read that slot's survey to get oriented, then research the current options yourself; each survey groups the options by type and lists the questions that decide the slot:
 
 - [TICKET-TRACKERS.md](TICKET-TRACKERS.md)
 - [GIT-HOSTS.md](GIT-HOSTS.md)
