@@ -38,7 +38,7 @@ The component that receives triggers, starts runs on runners, and records which 
 _Avoid_: dispatcher, scheduler, control plane
 
 **Observability platform**:
-Where runners send logs, traces and status, so a human can see what happened inside each run. A run never decides on it until something writes it into the ticket tracker or git host.
+Where runners send logs, traces and status, so a human can see what happened inside each run. Optional: the product filling the runner or orchestrator slot often shows enough on its own. A run never decides on it until something writes it into the ticket tracker or git host.
 _Avoid_: observability, logs, monitoring, dashboard
 
 ## Designing a factory
@@ -51,14 +51,21 @@ Start from the user's problem, not the factory: untriaged tickets, PRs waiting f
 
 Each service is a slot. One product can fill several slots, and one server can host several services. Three designs, side by side:
 
-| Service                | All on GitHub     | Linear tickets                 | Own tracker               |
-| ---------------------- | ----------------- | ------------------------------ | ------------------------- |
-| Ticket tracker         | GitHub Issues     | Linear                         | own app                   |
-| Ticket source          | feedback button   | feedback button, monitor       | feedback button, monitor  |
-| Git host               | GitHub            | GitHub                         | GitHub                    |
-| Orchestrator           | GitHub Actions    | own server + database          | own app                   |
-| Runner                 | Actions runner    | Actions, E2B, Daytona or a VPS | own app, or sandboxes     |
-| Observability platform | Actions run pages | Langfuse                       | Langfuse, or own app      |
+| Service                | All on GitHub                   | Linear tickets                 | Own tracker              |
+| ---------------------- | ------------------------------- | ------------------------------ | ------------------------ |
+| Ticket tracker         | GitHub Issues                   | Linear                         | own app                  |
+| Ticket source          | feedback button                 | feedback button, monitor       | feedback button, monitor |
+| Git host               | GitHub                          | GitHub                         | GitHub                   |
+| Orchestrator           | GitHub Actions                  | own server + database          | own app                  |
+| Runner                 | Actions runner                  | Actions, E2B, Daytona or a VPS | own app, or sandboxes    |
+| Observability platform | none: Actions run pages suffice | an LLM tracing platform        | own app                  |
+
+When the user is choosing a product for a slot, read that slot's survey of the options, grouped by type:
+
+- [TICKET-TRACKERS.md](TICKET-TRACKERS.md)
+- [GIT-HOSTS.md](GIT-HOSTS.md)
+- [RUNNERS.md](RUNNERS.md)
+- [OBSERVABILITY-PLATFORMS.md](OBSERVABILITY-PLATFORMS.md)
 
 Buy the services and build the runs: the runs carry the user's design, the services are generic. Favour an off-the-shelf ticket tracker: it is robust, people already know it, and outside users are easy to let in.
 
@@ -74,4 +81,4 @@ For each run, answer:
 
 For each ticket source, answer: what stops it filing the same ticket twice?
 
-A design is finished when every slot names a product and every run and ticket source has an answer to every question.
+A design is finished when every slot names a product (or, for the observability platform, a deliberate none) and every run and ticket source has an answer to every question.
