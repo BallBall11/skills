@@ -2,12 +2,6 @@
 
 Runs grouped by the problem they solve. Each names its trigger, what it does, and what it triggers next. Most factories start as one of these and grow by chaining the next.
 
-The examples keep three kinds of verification apart:
-
-- An **automated check** is deterministic: tests, type checks, lints, the build. Pass or fail, no judgement.
-- An **automated review** is an agent judging another agent's work from a fresh context. It forms a judgement, so it raises the floor before human review rather than replacing it.
-- **Human review** is a human reading the diff, not the run's summary of it.
-
 ## Untriaged tickets pile up
 
 **Explore run**
