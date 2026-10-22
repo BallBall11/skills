@@ -51,6 +51,18 @@ A design has two halves: the **services**, each a slot filled with a product, an
 
 Start from the user's problem, not the factory: untriaged tickets, PRs waiting for automated review, a stricter automated check to migrate to, bugs nobody reads. When the user names a problem or doesn't know what to build, read [EXAMPLE-TASKS.md](EXAMPLE-TASKS.md) for the tasks that solve common ones.
 
+### Start slow
+
+Every trigger is an accelerator: it removes a human checkpoint and starts work nobody asked for in the moment. Accelerators need brakes, the things that slow runs down and raise the quality of what they produce:
+
+- **Automated checks**: types, lint and tests, enforced inside every run.
+- **Automated review**: a separate run that reads the diff cold against the codebase's standards and the ticket.
+- **Human review**: a human reads the PR before it merges. What it catches becomes new automated checks and sharper automated review.
+
+A factory with accelerators and no brakes is a slop cannon.
+
+Add one accelerator at a time, once the brakes catch what the last one let through. Begin with one task, a human trigger (a label), human review on every PR, and one run at a time. Climb the trust ladder as the brakes earn it: more triggers, more runs in parallel, fewer human checkpoints. Every loop of runs gets a cap on tries, then hands the ticket to a human.
+
 ### Fill every slot
 
 Each service is a slot. One product can fill several slots, and one server can host several services. Three designs, side by side:
