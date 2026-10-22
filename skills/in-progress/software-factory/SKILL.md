@@ -53,15 +53,9 @@ Start from the user's problem, not the factory: untriaged tickets, PRs waiting f
 
 ### Start slow
 
-Every trigger is an accelerator: it removes a human checkpoint and starts work nobody asked for in the moment. Accelerators need brakes, the things that slow runs down and raise the quality of what they produce:
+Every trigger is an accelerator. The brakes are automated checks, automated review and human review, and what human review catches sharpens the other two. Accelerators without brakes make a slop cannon.
 
-- **Automated checks**: types, lint and tests, enforced inside every run.
-- **Automated review**: a separate run that reads the diff cold against the codebase's standards and the ticket.
-- **Human review**: a human reads the PR before it merges. What it catches becomes new automated checks and sharper automated review.
-
-A factory with accelerators and no brakes is a slop cannon.
-
-Add one accelerator at a time, once the brakes catch what the last one let through. Keep every trigger automated, and start it throttled: one bug report in ten instead of every one, a clock once a day instead of ten times. Begin with one task, human review on every PR, and one run at a time. Climb the trust ladder as the brakes earn it: open the throttle, add triggers, run more in parallel, keep fewer human checkpoints. Every loop of runs gets a cap on tries, then hands the ticket to a human.
+Add one automated trigger at a time, throttled at first (one bug report in ten, a clock once a day), with human review on every PR. Open the throttle as the brakes earn trust, and cap every loop of runs at a few tries before a human.
 
 ### Fill every slot
 
