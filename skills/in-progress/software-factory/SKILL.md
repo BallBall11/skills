@@ -45,6 +45,8 @@ _Avoid_: observability, logs, monitoring, dashboard
 
 A design has two halves: the **services**, each a slot filled with a product, and the **runs** that move tickets through them.
 
+Start from the user's problem, not the factory: untriaged tickets, PRs waiting for review, bugs nobody reads. When the user names a problem or doesn't know what to build, read [EXAMPLE-RUNS.md](EXAMPLE-RUNS.md) for the runs that solve common ones.
+
 ### Fill every slot
 
 Each service is a slot. One product can fill several slots, and one server can host several services. Three designs, side by side:
@@ -65,7 +67,7 @@ Buy the services and build the runs: the runs carry the user's design, the servi
 For each run, answer:
 
 1. What triggers it?
-2. What does it read and write, and in which service?
+2. What does it do, and which services does it read and write?
 3. What does it trigger next?
 4. Where does a human re-enter?
 5. What stops two runs doing the same ticket?
