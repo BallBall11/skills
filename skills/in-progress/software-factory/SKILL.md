@@ -53,7 +53,11 @@ Start from the user's problem, not the factory: untriaged tickets, PRs waiting f
 
 ### Start slow
 
-Every trigger is an accelerator. The brakes are automated checks, automated review and human review, and what human review catches sharpens the other two. Accelerators without brakes make a slop cannon.
+Every trigger is an accelerator. Accelerators without brakes make a slop cannon. There are three brakes:
+
+- **Automated checks**: deterministic gates (types, lint, tests) that every run must pass.
+- **Automated review**: a separate run that reads the diff cold against the codebase's standards and the ticket.
+- **Human review**: a human reads the PR before it merges; what it catches becomes new automated checks and sharper automated review.
 
 Add one automated trigger at a time, throttled at first (one bug report in ten, a clock once a day), with human review on every PR. Open the throttle as the brakes earn trust, and cap every loop of runs at a few tries before a human.
 
