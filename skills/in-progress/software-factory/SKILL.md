@@ -61,7 +61,7 @@ Every trigger is an accelerator: it removes a human checkpoint and starts work n
 
 A factory with accelerators and no brakes is a slop cannon.
 
-Add one accelerator at a time, once the brakes catch what the last one let through. Begin with one task, a human trigger (a label), human review on every PR, and one run at a time. Climb the trust ladder as the brakes earn it: more triggers, more runs in parallel, fewer human checkpoints. Every loop of runs gets a cap on tries, then hands the ticket to a human.
+Add one accelerator at a time, once the brakes catch what the last one let through. Keep every trigger automated, and start it throttled: one bug report in ten instead of every one, a clock once a day instead of ten times. Begin with one task, human review on every PR, and one run at a time. Climb the trust ladder as the brakes earn it: open the throttle, add triggers, run more in parallel, keep fewer human checkpoints. Every loop of runs gets a cap on tries, then hands the ticket to a human.
 
 ### Fill every slot
 

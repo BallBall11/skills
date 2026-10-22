@@ -75,6 +75,6 @@ A monitor (slow queries, error rates) is a ticket source. It files a ticket per 
 ## The same mistakes keep coming back
 
 **Retro task**
-- Trigger: a human labels a merged PR.
+- Trigger: a PR merges, throttled to one merged PR in ten.
 - Does: reads the PR, its ticket, its automated reviews and its run logs, and proposes changes to the factory's own instructions as a PR.
 - Triggers: an automated review run.
