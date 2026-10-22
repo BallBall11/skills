@@ -4,12 +4,12 @@ description: Shared language for designing a software factory: the tasks it runs
 disable-model-invocation: true
 ---
 
-A **software factory** is a system of agents that turns tickets into merged code, deployed on remote infrastructure the user chooses. This skill is the language for designing one. Use these terms, and only these, when discussing or whiteboarding a factory; when the user reaches for a word under _Avoid_, name the canonical term.
+A **software factory** is a system of agents that turns tickets, PRs and schedules into merged code, deployed on remote infrastructure the user chooses. This skill is the language for designing one. Use these terms, and only these, when discussing or whiteboarding a factory; when the user reaches for a word under _Avoid_, name the canonical term.
 
 ## Tasks and runs
 
 **Task**:
-A kind of work the factory performs, defined once and run many times: review, explore, implement, ratchet. The ticket is what a task works on.
+A kind of work the factory performs, defined once and run many times: review, explore, implement, ratchet. A task may work on a ticket, a PR, or the codebase as a whole.
 _Avoid_: job, workflow, action
 
 **Trigger**:
@@ -47,7 +47,7 @@ _Avoid_: observability, logs, monitoring, dashboard
 
 ## Designing a factory
 
-A design has two halves: the **services**, each a slot filled with a product, and the **tasks** whose runs move tickets through them.
+A design has two halves: the **services**, each a slot filled with a product, and the **tasks** whose runs move work through them.
 
 Start from the user's problem, not the factory: untriaged tickets, PRs waiting for automated review, a stricter automated check to migrate to, bugs nobody reads. When the user names a problem or doesn't know what to build, read [EXAMPLE-TASKS.md](EXAMPLE-TASKS.md) for the tasks that solve common ones.
 
@@ -56,7 +56,7 @@ Start from the user's problem, not the factory: untriaged tickets, PRs waiting f
 Every trigger is an accelerator. Accelerators without brakes make a slop cannon. There are three brakes:
 
 - **Automated checks**: deterministic gates (types, lint, tests) that every run must pass.
-- **Automated review**: a separate run that reads the diff cold against the codebase's standards and the ticket.
+- **Automated review**: a separate run that reads the diff cold against the codebase's standards and the ticket, when there is one.
 - **Human review**: a human reads the PR before it merges; what it catches becomes new automated checks and sharper automated review.
 
 Add one automated trigger at a time, throttled at first (one bug report in ten, a clock once a day), with human review on every PR. Open the throttle as the brakes earn trust, and cap every loop of runs at a few tries before a human.
@@ -91,7 +91,7 @@ For each task, answer:
 2. What does it do, and which services does it read and write?
 3. What does it trigger next?
 4. Where does a human re-enter?
-5. What stops two runs doing the same ticket?
+5. What stops two runs doing the same work?
 
 For each ticket source, answer: what stops it filing the same ticket twice?
 
