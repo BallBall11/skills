@@ -45,7 +45,7 @@ _Avoid_: observability, logs, monitoring, dashboard
 
 A design has two halves: the **services**, each a slot filled with a product, and the **runs** that move tickets through them.
 
-Start from the user's problem, not the factory: untriaged tickets, PRs waiting for review, bugs nobody reads. When the user names a problem or doesn't know what to build, read [EXAMPLE-RUNS.md](EXAMPLE-RUNS.md) for the runs that solve common ones.
+Start from the user's problem, not the factory: untriaged tickets, PRs waiting for automated review, a stricter automated check to migrate to, bugs nobody reads. When the user names a problem or doesn't know what to build, read [EXAMPLE-RUNS.md](EXAMPLE-RUNS.md) for the runs that solve common ones.
 
 ### Fill every slot
 

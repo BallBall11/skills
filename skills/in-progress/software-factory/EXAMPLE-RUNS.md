@@ -2,6 +2,12 @@
 
 Runs grouped by the problem they solve. Each names its trigger, what it does, and what it triggers next. Most factories start as one of these and grow by chaining the next.
 
+The examples keep three kinds of verification apart:
+
+- An **automated check** is deterministic: tests, type checks, lints, the build. Pass or fail, no judgement.
+- An **automated review** is an agent judging another agent's work from a fresh context. It forms a judgement, so it raises the floor before human review rather than replacing it.
+- **Human review** is a human reading the diff, not the run's summary of it.
+
 ## Untriaged tickets pile up
 
 **Explore run**
@@ -13,22 +19,22 @@ Runs grouped by the problem they solve. Each names its trigger, what it does, an
 
 **Implementer run**
 - Trigger: a ticket is labelled ready, by a human or an explore run.
-- Does: builds the ticket and opens a draft PR.
-- Triggers: a review run.
+- Does: builds the ticket until the automated checks pass, and opens a draft PR.
+- Triggers: an automated review run.
 
 ## PRs wait for review
 
-**Review run**
-- Trigger: a PR opens with no review yet, or a human labels it.
+**Automated review run**
+- Trigger: a PR opens with no automated review yet, or a human labels it.
 - Does: reviews the diff against the codebase's standards and the ticket it came from.
-- Triggers: a rework run on a fail. On a pass it ends, and a human merges.
+- Triggers: a rework run on a fail. On a pass it ends, and the PR waits for human review before a human merges it.
 
-## Failed reviews sit unfixed
+## Failed automated reviews sit unfixed
 
 **Rework run**
-- Trigger: a review run fails a PR.
-- Does: fixes only what the review named, and pushes.
-- Triggers: a review run. After a set number of fails, it ends with the PR labelled as waiting for a human.
+- Trigger: an automated review run fails a PR.
+- Does: fixes only what the automated review named, and pushes.
+- Triggers: an automated review run. After a set number of fails, it ends with the PR labelled as waiting for a human.
 
 ## Specs are too big for one run
 
@@ -38,6 +44,17 @@ Runs grouped by the problem they solve. Each names its trigger, what it does, an
 - Triggers: an implementer run.
 
 The implementer run here picks the next ticket whose dependencies are all closed, and triggers itself again until no ticket is left.
+
+## Migrating to a stricter automated check
+
+A new lint rule (or a stricter type setting) is switched on, but only some files pass it. The rule enforces on the passing files, and the failing ones sit on an exception list.
+
+**Ratchet run**
+- Trigger: a daily clock.
+- Does: takes one file off the exception list, fixes it until the stricter check passes, and opens a PR.
+- Triggers: an automated review run. Once the exception list is empty, the ratchet run has nothing to take and the migration is done.
+
+One small PR a day keeps human review cheap, and the check only ever gets stricter.
 
 ## Users report bugs nobody reads
 
@@ -52,7 +69,7 @@ A monitor (slow queries, error rates) is a ticket source. It files a ticket per 
 **Fix run**
 - Trigger: the orchestrator reports a failed run.
 - Does: files the failing log as a ticket, and attempts a fix as a PR when the failure is fixable.
-- Triggers: a review run. A failure in a fix run's own work triggers nothing, so fixes never chain.
+- Triggers: an automated review run. A failure in a fix run's own work triggers nothing, so fixes never chain. Because the fix changes the factory itself, it always gets human review.
 
 ## The codebase drifts
 
@@ -65,5 +82,5 @@ A monitor (slow queries, error rates) is a ticket source. It files a ticket per 
 
 **Retro run**
 - Trigger: a human labels a merged PR.
-- Does: reads the PR, its ticket, its reviews and its run logs, and proposes changes to the factory's own instructions as a PR.
-- Triggers: a review run.
+- Does: reads the PR, its ticket, its automated reviews and its run logs, and proposes changes to the factory's own instructions as a PR.
+- Triggers: an automated review run.
