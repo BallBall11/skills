@@ -1,19 +1,23 @@
 ---
 name: software-factory
-description: Shared language for designing a software factory: the runs it executes and the services it plugs into.
+description: Shared language for designing a software factory: the tasks it runs and the services it plugs into.
 disable-model-invocation: true
 ---
 
 A **software factory** is a system of agents that turns tickets into merged code, deployed on remote infrastructure the user chooses. This skill is the language for designing one. Use these terms, and only these, when discussing or whiteboarding a factory; when the user reaches for a word under _Avoid_, name the canonical term.
 
-## Runs
+## Tasks and runs
+
+**Task**:
+A kind of work the factory performs, defined once and run many times: review, explore, implement, ratchet. The ticket is what a task works on.
+_Avoid_: job, workflow, action
 
 **Trigger**:
 The event that starts a run: a change in the ticket tracker or git host, a clock in the orchestrator, or another run.
 
 **Run**:
-One piece of work executed on one runner, from its trigger to its finish, treated as a black box. A run triggers further runs either directly, through logic in the orchestrator, or by changing the ticket tracker or git host. A run never waits for a human: it ends, and the human's later change to the ticket tracker or git host triggers a new run.
-_Avoid_: session, job
+One execution of a task on one runner, from its trigger to its finish, treated as a black box. A run triggers further runs either directly, through logic in the orchestrator, or by changing the ticket tracker or git host. A run never waits for a human: it ends, and the human's later change to the ticket tracker or git host triggers a new run.
+_Avoid_: session
 
 **Runner**:
 The disposable machine a run executes on. Nothing on it survives the run, even when the machine itself is long-lived: a run's only memory of earlier runs is the ticket tracker, the git host and the orchestrator.
@@ -43,9 +47,9 @@ _Avoid_: observability, logs, monitoring, dashboard
 
 ## Designing a factory
 
-A design has two halves: the **services**, each a slot filled with a product, and the **runs** that move tickets through them.
+A design has two halves: the **services**, each a slot filled with a product, and the **tasks** whose runs move tickets through them.
 
-Start from the user's problem, not the factory: untriaged tickets, PRs waiting for automated review, a stricter automated check to migrate to, bugs nobody reads. When the user names a problem or doesn't know what to build, read [EXAMPLE-RUNS.md](EXAMPLE-RUNS.md) for the runs that solve common ones.
+Start from the user's problem, not the factory: untriaged tickets, PRs waiting for automated review, a stricter automated check to migrate to, bugs nobody reads. When the user names a problem or doesn't know what to build, read [EXAMPLE-TASKS.md](EXAMPLE-TASKS.md) for the tasks that solve common ones.
 
 ### Fill every slot
 
@@ -67,11 +71,11 @@ When the user is choosing a product for a slot, read that slot's survey to get o
 - [RUNNERS.md](RUNNERS.md)
 - [OBSERVABILITY-PLATFORMS.md](OBSERVABILITY-PLATFORMS.md)
 
-Buy the services and build the runs: the runs carry the user's design, the services are generic. Favour an off-the-shelf ticket tracker: it is robust, people already know it, and outside users are easy to let in.
+Buy the services and build the tasks: the tasks carry the user's design, the services are generic. Favour an off-the-shelf ticket tracker: it is robust, people already know it, and outside users are easy to let in.
 
-### Question every run
+### Question every task
 
-For each run, answer:
+For each task, answer:
 
 1. What triggers it?
 2. What does it do, and which services does it read and write?
@@ -81,4 +85,4 @@ For each run, answer:
 
 For each ticket source, answer: what stops it filing the same ticket twice?
 
-A design is finished when every slot names a product (or, for the observability platform, a deliberate none) and every run and ticket source has an answer to every question.
+A design is finished when every slot names a product (or, for the observability platform, a deliberate none) and every task and ticket source has an answer to every question.
