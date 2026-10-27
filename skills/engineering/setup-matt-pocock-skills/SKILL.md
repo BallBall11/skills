@@ -1,6 +1,6 @@
 ---
 name: setup-matt-pocock-skills
-description: "Configure this repo for the engineering skills: set up its issue tracker, triage label vocabulary, and domain doc layout. Run once before first use of the other engineering skills."
+description: "Configure this repo for the engineering skills: set up its issue tracker, triage label vocabulary, domain doc layout, and verification entrypoint. Run once before first use of the other engineering skills."
 disable-model-invocation: true
 ---
 
@@ -11,6 +11,7 @@ Scaffold the per-repo configuration that the engineering skills assume:
 - **Issue tracker**: where issues live (GitHub by default; local markdown is also supported out of the box)
 - **Triage labels**: the strings used for the five canonical triage roles
 - **Domain docs**: where `GLOSSARY.md` and ADRs live, and the consumer rules for reading them
+- **Verification entrypoint**: one command (`init.sh`) that proves the repo is healthy, and the consumer rules saying who runs it when
 
 This is a prompt-driven skill, not a deterministic script. Explore, present what you found, confirm with the user, then write.
 
@@ -25,6 +26,7 @@ Look at the current repo to understand its starting state. Read whatever exists;
 - `GLOSSARY.md` and `GLOSSARY-MAP.md` at the repo root, and the legacy `CONTEXT.md` / `CONTEXT-MAP.md`. If a legacy file exists, offer to `git mv` it to its `GLOSSARY` name and rewrite those names in `docs/agents/domain.md`.
 - `docs/adr/` and any `src/*/docs/adr/` directories
 - `docs/agents/`: does this skill's prior output already exist?
+- Existing verification surface: an `init.sh` at the repo root, `Makefile` or `justfile` targets, `package.json` scripts, and CI workflow files under `.github/workflows/` (or the repo's CI equivalent). What already proves this repo is healthy?
 - `.scratch/`: a sign that a local-markdown issue tracker convention is already in use
 - Is the `triage` skill installed? (a `triage` skill folder alongside this one, or `triage` in your available skills.) This decides whether Section B runs at all.
 - Monorepo signals: a `pnpm-workspace.yaml`, a `workspaces` field in `package.json`, or a populated `packages/*` with its own `src/`. These are present only in a genuinely large multi-package repo; their absence means single-context, which is almost every repo.
@@ -62,12 +64,28 @@ The defaults are the five canonical roles, each label string equal to its name: 
 
 Offer **multi-context** (a root `GLOSSARY-MAP.md` pointing to per-context `GLOSSARY.md` files) only when exploration found monorepo signals. Then confirm which layout they want.
 
+**Section D: Verification entrypoint.** Default to **writing `init.sh` from the commands exploration found**. This fits almost every repo that has any checks; write it without asking.
+
+Only branch off the default when `init.sh` already exists and looks maintained (propose updating it in place instead of writing a parallel one), or when exploration found no check commands at all: then ask the user what "done" looks like for this repo, and if they can't name checks, write a placeholder gate and say plainly that coverage is thin. A thin gate beats no gate, and `retro` treats a missing or unwired gate as a finding.
+
+> Explainer: The "verification entrypoint" is one command that proves the repo is healthy, end to end. `implement` and `implement-spec` run it before claiming done, `code-review` runs it as its pre-review baseline, and a fresh session runs it before its first edit. Derive it from commands the repo already has; don't invent new checks here.
+
+Composition rules for `init.sh`:
+
+- Fast-fail order: dependency install first, then static checks (format, lint), then typecheck or build, then tests.
+- `set -e` at the top; one step per line; each step echoes the command it runs.
+- Take commands from the repo's own sources: `package.json` scripts, `Makefile`/`justfile` targets, CI workflow steps. The repo's own names win: call `npm run typecheck`, don't reinvent `tsc --noEmit`.
+- If a layer has no command (no tests, no typecheck), omit that line and say so when presenting the draft.
+
+Record the entrypoint in `docs/agents/verification.md` so skills read the contract instead of guessing. Done when `./init.sh` runs end to end from a clean shell and exits non-zero when a check fails.
+
 ### 3. Confirm and edit
 
 Show the user a draft of:
 
 - The `## Agent skills` block to add to whichever of `CLAUDE.md` / `AGENTS.md` is being edited (see step 4 for selection rules)
-- The contents of `docs/agents/issue-tracker.md`, `docs/agents/domain.md`, and `docs/agents/triage-labels.md` (the last only when `triage` is installed)
+- The contents of `docs/agents/issue-tracker.md`, `docs/agents/domain.md`, `docs/agents/verification.md`, and `docs/agents/triage-labels.md` (the last only when `triage` is installed)
+- The draft `init.sh`
 
 Let them edit before writing.
 
@@ -99,6 +117,10 @@ The block:
 ### Domain docs
 
 [one-line summary of layout: "single-context" or "multi-context"]. See `docs/agents/domain.md`.
+
+### Verification
+
+[one-line summary of what `./init.sh` runs]. See `docs/agents/verification.md`.
 ```
 
 Include the `### Triage labels` sub-block, and write `docs/agents/triage-labels.md`, only when `triage` is installed and Section B ran. When it isn't, both are omitted.
@@ -112,9 +134,10 @@ Then write the docs files using the seed templates in this skill folder as a sta
 - [issue-tracker-local.md](./issue-tracker-local.md): local-markdown issue tracker
 - [triage-labels.md](./triage-labels.md): label mapping (only if `triage` is installed)
 - [domain.md](./domain.md): domain doc consumer rules + layout
+- [verification.md](./verification.md): verification entrypoint contract + consumer rules
 
 For "other" issue trackers, write `docs/agents/issue-tracker.md` from scratch using the user's description.
 
 ### 5. Done
 
-Tell the user the setup is complete and which engineering skills will now read from these files. Mention they can edit `docs/agents/*.md` directly later; re-running this skill is only necessary if they want to switch issue trackers or restart from scratch.
+Tell the user the setup is complete and which engineering skills will now read from these files. Run `./init.sh` once with them to confirm it passes. Mention they can edit `docs/agents/*.md` directly later; re-running this skill is only necessary if they want to switch issue trackers, rework the verification entrypoint, or restart from scratch.
